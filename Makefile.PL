@@ -11,6 +11,9 @@ WriteMakefile(
     PREREQ_PM => {
         'Test::More' => 0,
         'version'    => 0,
+	'Mojo::DOM'  => 0,
+	'Mojo::UserAgent' => 0,
+	'Moose' => 0
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Web-Scraper-Citations-*' },

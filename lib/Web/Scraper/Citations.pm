@@ -4,24 +4,60 @@ use warnings;
 use strict;
 use Carp;
 
-use version; $VERSION = qv('0.0.3');
+use version; our $VERSION = qv('0.0.1');
 
-# Other recommended modules (uncomment to use):
-#  use IO::Prompt;
-#  use Perl6::Export;
-#  use Perl6::Slurp;
-#  use Perl6::Say;
-
+use Mojo::UserAgent;
+use Mojo::DOM;
+use Moose;
 
 # Module implementation here
+has 'id' => ( is => 'ro', isa => 'Str' );
+has 'citations' => ( is => 'ro', isa => 'Int' );
+has 'citations_last5' => ( is => 'ro', isa => 'Int' );
+has 'h' => ( is => 'ro', isa => 'Int' );
+has 'h_last5' => ( is => 'ro', isa => 'Int' );
+has 'i10' => ( is => 'ro', isa => 'Int' );
+has 'i10_last5' => ( is => 'ro', isa => 'Int' );
+has 'name' => ( is => 'ro', isa => 'Str' );
+has 'email'=> ( is => 'ro', isa => 'Str' );
+has 'ua' => ( is=> 'ro', isa=>'Mojo::UserAgent' );
+
+# Mojo functions
+around BUILDARGS => sub {
+    my $orig  = shift;
+    my $class = shift;
+ 
+    if ( @_ == 1 && !ref $_[0] ) {
+      my $id;
+      if ( $_[0] =~ /user=(\w+)/ ) {
+	$id = $1;
+      } else {
+	$id = $_[0];
+      }
+      return $class->$orig( id => $_[0] );
+    }
+    else {
+      return $class->$orig(@_);
+    }
+};
 
 
-1; # Magic true value required at end of module
+sub BUILD {
+    my $self = shift;
+ 
+#    die 'For some reason this person has no id' unless $self->has_id;
+    
+    my $url = Mojo::URL->new("http://scholar.google.com/citations?user=".$self->id);
+    my $ua = $self->ua || Mojo::UserAgent->new( max_redirects => 5 );
+    my $profile = $ua->get( $url );
+}
+
+"To an infinite H and beyond"; # Magic true value required at end of module
 __END__
 
 =head1 NAME
 
-Web::Scraper::Citations - [One line description of module's purpose here]
+Web::Scraper::Citations - Scrapes Google Scholar profiles for citations and stuff
 
 
 =head1 VERSION
@@ -33,96 +69,43 @@ This document describes Web::Scraper::Citations version 0.0.1
 
     use Web::Scraper::Citations;
 
-=for author to fill in:
-    Brief code example(s) here showing commonest usage(s).
-    This section will be as far as many users bother reading
-    so make it as educational and exeplary as possible.
+    my $author_profile = new Web::Scraper::Citations( $url_or_author_id );
+
+    say "This champ has got an h of ", $author_profile->h(), " and ", $author_profile->citations();
   
   
 =head1 DESCRIPTION
 
-=for author to fill in:
-    Write a full description of the module and its features here.
-    Use subsections (=head2, =head3) as appropriate.
+This scraper downloads information from Google Scholar profiles at
+L<http://scholar.google.com/citations>. Scraping is limited by google
+to 2500 a day, so be careful with it and don't binge-scrape.
 
 
 =head1 INTERFACE 
 
-=for author to fill in:
-    Write a separate section listing the public components of the modules
-    interface. These normally consist of either subroutines that may be
-    exported, or methods that may be called on objects belonging to the
-    classes provided by the module.
-
-
 =head1 DIAGNOSTICS
-
-=for author to fill in:
-    List every single error and warning message that the module can
-    generate (even the ones that will "never happen"), with a full
-    explanation of each problem, one or more likely causes, and any
-    suggested remedies.
-
 =over
 
 =item C<< Error message here, perhaps with %s placeholders >>
 
 [Description of error here]
 
-=item C<< Another error message here >>
-
-[Description of error here]
-
-[Et cetera, et cetera]
-
 =back
 
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
-=for author to fill in:
-    A full explanation of any configuration system(s) used by the
-    module, including the names and locations of any configuration
-    files, and the meaning of any environment variables or properties
-    that can be set. These descriptions must also include details of any
-    configuration language used.
-  
 Web::Scraper::Citations requires no configuration files or environment variables.
-
 
 =head1 DEPENDENCIES
 
-=for author to fill in:
-    A list of all the other modules that this module relies upon,
-    including any restrictions on versions, and an indication whether
-    the module is part of the standard Perl distribution, part of the
-    module's distribution, or must be installed separately. ]
-
-None.
-
 
 =head1 INCOMPATIBILITIES
-
-=for author to fill in:
-    A list of any modules that this module cannot be used in conjunction
-    with. This may be due to name conflicts in the interface, or
-    competition for system or program resources, or due to internal
-    limitations of Perl (for example, many modules that use source code
-    filters are mutually incompatible).
 
 None reported.
 
 
 =head1 BUGS AND LIMITATIONS
-
-=for author to fill in:
-    A list of known problems with the module, together with some
-    indication Whether they are likely to be fixed in an upcoming
-    release. Also a list of restrictions on the features the module
-    does provide: data types that cannot be handled, performance issues
-    and the circumstances in which they may arise, practical
-    limitations on the size of data sets, special cases that are not
-    (yet) handled, etc.
 
 No bugs have been reported.
 
@@ -141,7 +124,7 @@ JJ  C<< <JMERELO@cpan.org> >>
 Copyright (c) 2015, JJ C<< <JMERELO@cpan.org> >>. All rights reserved.
 
 This module is free software; you can redistribute it and/or
-modify it under the same terms as Perl itself. See L<perlartistic>.
+modify it under the GPL v3.
 
 
 =head1 DISCLAIMER OF WARRANTY
