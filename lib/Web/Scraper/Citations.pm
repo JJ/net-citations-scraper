@@ -22,6 +22,7 @@ has 'i10_last5' => ( is => 'ro', isa => 'Int' );
 has 'name' => ( is => 'ro', isa => 'Str' );
 has 'affiliation'=> ( is => 'ro', isa => 'Str' );
 
+use constant STAT_NAMES => qw( citations citations_last5 h h_last5 i10 i10_last5 ); 
 
 # Mojo functions
 around BUILDARGS => sub {
@@ -41,7 +42,7 @@ around BUILDARGS => sub {
       $object{'name'} = $dom->at("#gsc_prf_in")->text;
       $object{'affiliation'} = $dom->at( ".gsc_prf_il" )->text;
       my @dom_stats = $dom->find(".gsc_rsb_std")->map('text')->each;
-      for my $stat ( qw( citations citations_last5 h h_last5 i10 i10_last5 ) ) {
+      for my $stat ( STAT_NAMES ) {
 	$object{$stat} = shift @dom_stats;
       }
       
@@ -52,10 +53,16 @@ around BUILDARGS => sub {
     }
 };
 
+sub profile_stats {
+    my $self = shift;
+    my %stats;
+    map( $stats{$_} = $self->$_, STAT_NAMES );
+    return \%stats;
+}
 
 
-#    die 'For some reason this person has no id' unless $self->has_id;
-    
+no Moose;
+__PACKAGE__->meta->make_immutable;    
    
 
 "To an infinite H and beyond"; # Magic true value required at end of module
