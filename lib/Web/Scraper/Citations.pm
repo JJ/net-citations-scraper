@@ -3,6 +3,7 @@ package Web::Scraper::Citations;
 use warnings;
 use strict;
 use Carp;
+use utf8;
 
 use version; our $VERSION = qv('0.0.1');
 
@@ -19,8 +20,8 @@ has 'h_last5' => ( is => 'ro', isa => 'Int' );
 has 'i10' => ( is => 'ro', isa => 'Int' );
 has 'i10_last5' => ( is => 'ro', isa => 'Int' );
 has 'name' => ( is => 'ro', isa => 'Str' );
-has 'email'=> ( is => 'ro', isa => 'Str' );
-has 'ua' => ( is=> 'ro', isa=>'Mojo::UserAgent' );
+has 'affiliation'=> ( is => 'ro', isa => 'Str' );
+
 
 # Mojo functions
 around BUILDARGS => sub {
@@ -28,13 +29,23 @@ around BUILDARGS => sub {
     my $class = shift;
  
     if ( @_ == 1 && !ref $_[0] ) {
-      my $id;
+      my %object;
       if ( $_[0] =~ /user=(\w+)/ ) {
-	$id = $1;
+	$object{'id'} = $1;
       } else {
-	$id = $_[0];
+	$object{'id'} = $_[0];
       }
-      return $class->$orig( id => $_[0] );
+      my $url = Mojo::URL->new("http://scholar.google.com/citations?user=$object{'id'}");
+      my $ua = Mojo::UserAgent->new( max_redirects => 5 );
+      my $dom = $ua->get( $url )->res->dom or die "Can't get profile $!";
+      $object{'name'} = $dom->at("#gsc_prf_in")->text;
+      $object{'affiliation'} = $dom->at( ".gsc_prf_il" )->text;
+      my @dom_stats = $dom->find(".gsc_rsb_std")->map('text')->each;
+      for my $stat ( qw( citations citations_last5 h h_last5 i10 i10_last5 ) ) {
+	$object{$stat} = shift @dom_stats;
+      }
+      
+      return $class->$orig( %object );
     }
     else {
       return $class->$orig(@_);
@@ -42,15 +53,10 @@ around BUILDARGS => sub {
 };
 
 
-sub BUILD {
-    my $self = shift;
- 
+
 #    die 'For some reason this person has no id' unless $self->has_id;
     
-    my $url = Mojo::URL->new("http://scholar.google.com/citations?user=".$self->id);
-    my $ua = $self->ua || Mojo::UserAgent->new( max_redirects => 5 );
-    my $profile = $ua->get( $url );
-}
+   
 
 "To an infinite H and beyond"; # Magic true value required at end of module
 __END__
