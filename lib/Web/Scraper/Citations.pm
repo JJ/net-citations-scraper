@@ -38,7 +38,7 @@ around BUILDARGS => sub {
       }
       my $url = Mojo::URL->new("http://scholar.google.com/citations?user=$object{'id'}");
       my $ua = Mojo::UserAgent->new( max_redirects => 5 );
-      my $dom = $ua->get( $url )->res->dom or die "Can't get profile $!";
+      my $dom = $ua->get( $url )->res->dom or die "$! does not exist";
       $object{'name'} = $dom->at("#gsc_prf_in")->text;
       $object{'affiliation'} = $dom->at( ".gsc_prf_il" )->text;
       my @dom_stats = $dom->find(".gsc_rsb_std")->map('text')->each;

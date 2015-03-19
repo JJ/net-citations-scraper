@@ -1,0 +1,112 @@
+#!/usr/bin/env perl
+
+use strict;
+use warnings;
+use v5.14;
+
+use lib qw(../lib lib );
+
+use Web::Scraper::Citations;
+
+my $profile_id_or_url = shift || die "Usage: $0 <researcher_id or Google Scholar Citations URL";
+
+my $profile = Web::Scraper::Citations->new( $profile_id_or_url );
+
+say "Name,Affiliation,citations,citations last 5 years, h,h last 5 years,i10,i10 last 5 years";
+my @row= ();
+for my $column ( qw( name affiliation citations citations_last5 h h_last5 i10 i10_last5) ) {
+  push @row, $profile->$column;
+}
+say join(", ", @row );
+
+__END__
+
+=head1 NAME
+
+get-profile - Scrapes Google Scholar profiles for citations and stuff
+
+
+=head1 VERSION
+
+This document describes get-profile version 0.0.1
+
+
+=head1 SYNOPSIS
+
+	get-profile gFxqc64AAAAJ
+or
+	get-profile http://scholar.google.com/citations?hl=en&user=gFxqc64AAAAJ  
+  
+=head1 DESCRIPTION
+
+This scraper downloads information from Google Scholar profiles at
+L<http://scholar.google.com/citations>. Scraping is limited by google
+to 2500 a day, so be careful with it and don't binge-scrape.
+
+=head1 DIAGNOSTICS
+
+=over
+
+=item C<< %s does not exist >>
+
+That profile does not exist. But you guessed that already.
+
+=back
+
+
+=head1 CONFIGURATION AND ENVIRONMENT
+
+cpanm C<Web::Scraper::Citations> or download it from GitHub and install
+
+=head1 DEPENDENCIES
+
+
+=head1 INCOMPATIBILITIES
+
+None reported.
+
+
+=head1 BUGS AND LIMITATIONS
+
+No bugs have been reported.
+
+Please report any bugs or feature requests to
+C<bug-web-scraper-citations@rt.cpan.org>, or through the web interface at
+L<http://rt.cpan.org>.
+
+
+=head1 AUTHOR
+
+JJ  C<< <JMERELO@cpan.org> >>
+
+
+=head1 LICENCE AND COPYRIGHT
+
+Copyright (c) 2015, JJ C<< <JMERELO@cpan.org> >>. All rights reserved.
+
+This module is free software; you can redistribute it and/or
+modify it under the GPL v3.
+
+
+=head1 DISCLAIMER OF WARRANTY
+
+BECAUSE THIS SOFTWARE IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY
+FOR THE SOFTWARE, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN
+OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES
+PROVIDE THE SOFTWARE "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER
+EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE
+ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE SOFTWARE IS WITH
+YOU. SHOULD THE SOFTWARE PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL
+NECESSARY SERVICING, REPAIR, OR CORRECTION.
+
+IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING
+WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR
+REDISTRIBUTE THE SOFTWARE AS PERMITTED BY THE ABOVE LICENCE, BE
+LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE
+THE SOFTWARE (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING
+RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A
+FAILURE OF THE SOFTWARE TO OPERATE WITH ANY OTHER SOFTWARE), EVEN IF
+SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF
+SUCH DAMAGES.
