@@ -5,7 +5,7 @@ use strict;
 use Carp;
 use utf8;
 
-use version; our $VERSION = qv('0.0.1');
+use version; our $VERSION = qv('0.0.2');
 
 use Mojo::UserAgent;
 use Mojo::DOM;
