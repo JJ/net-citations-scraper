@@ -72,11 +72,9 @@ __END__
 
 Web::Scraper::Citations - Scrapes Google Scholar profiles for citations and stuff
 
-
 =head1 VERSION
 
 This document describes Web::Scraper::Citations version 0.0.1
-
 
 =head1 SYNOPSIS
 
@@ -96,27 +94,26 @@ to 2500 a day, so be careful with it and don't binge-scrape.
 
 =head1 INTERFACE 
 
-=head1 DIAGNOSTICS
-=over
+=head2 new ( $url_or_author_id )
 
-=item C<< Error message here, perhaps with %s placeholders >>
+Creates a new object from the Google Citations URL or author ID (which is part of the URL anyway)
 
-[Description of error here]
+=head2 h, h_last5, citations, citations_last5, i10, i10_last5, name, affiliation
 
-=back
+Returns the h index, citations, and number of papers with more than 10
+citations, absolute or in the last 5 years.
 
+=head2 profile_stats
+
+Returns a hashref with all stats above, names as keys.
+
+=head2 STAT_NAMES
+
+Constant with the names of the stats we are interested in.
 
 =head1 CONFIGURATION AND ENVIRONMENT
 
 Web::Scraper::Citations requires no configuration files or environment variables.
-
-=head1 DEPENDENCIES
-
-
-=head1 INCOMPATIBILITIES
-
-None reported.
-
 
 =head1 BUGS AND LIMITATIONS
 
