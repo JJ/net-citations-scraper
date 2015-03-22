@@ -9,6 +9,7 @@ use version; our $VERSION = qv('0.0.1');
 
 use Mojo::UserAgent;
 use Mojo::DOM;
+use Mojo::ByteStream 'b';
 use Moose;
 
 # Module implementation here
@@ -41,6 +42,7 @@ around BUILDARGS => sub {
       my $dom = $ua->get( $url )->res->dom or die "$! does not exist";
       $object{'name'} = $dom->at("#gsc_prf_in")->text;
       $object{'affiliation'} = $dom->at( ".gsc_prf_il" )->text;
+      
       my @dom_stats = $dom->find(".gsc_rsb_std")->map('text')->each;
       for my $stat ( STAT_NAMES ) {
 	$object{$stat} = shift @dom_stats;

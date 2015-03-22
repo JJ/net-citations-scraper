@@ -3,10 +3,12 @@
 use strict;
 use warnings;
 use v5.14;
+use utf8;
 
 use lib qw(../lib lib );
 
 use Web::Scraper::Citations;
+use Mojo::ByteStream 'b';
 
 my $profile_id_or_url = shift || die "Usage: $0 <researcher_id or Google Scholar Citations URL";
 
@@ -15,8 +17,9 @@ my $profile = Web::Scraper::Citations->new( $profile_id_or_url );
 say "Name,Affiliation,citations,citations last 5 years, h,h last 5 years,i10,i10 last 5 years";
 my @row= ();
 for my $column ( qw( name affiliation citations citations_last5 h h_last5 i10 i10_last5) ) {
-  push @row, $profile->$column;
+  push @row, b($profile->$column)->encode('UTF-8');
 }
+
 say join(", ", @row );
 
 __END__
