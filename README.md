@@ -1,6 +1,6 @@
 # Web::Scraper::Citations
 
-Google scholar citations profile scraper
+[Google scholar citations](http://scholar.google.com/citations) profile scraper. Extracts citation stats.  
 
 ##Installation
 
