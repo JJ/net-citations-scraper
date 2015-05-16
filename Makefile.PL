@@ -2,7 +2,7 @@ use strict;
 use warnings;
 use ExtUtils::MakeMaker;
 
-my @scripts = grep {-f } glob("scripts/*"); # Ripped from Text::PDF
+my @scripts = grep {-f && !/~/ } glob("scripts/*"); # Ripped from Text::PDF
 
 my %make;
 if ($ExtUtils::MakeMaker::VERSION > 6.64) {
