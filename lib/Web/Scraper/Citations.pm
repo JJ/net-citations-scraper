@@ -41,7 +41,7 @@ around BUILDARGS => sub {
       my $ua = Mojo::UserAgent->new( max_redirects => 5 );
       my $response = $ua->get( $url )->res;
       if ( $response->code != 200 ) {
-	  croak "Pake not found with code ". $response->code;
+	  croak "Page not found with code ". $response->code. " and message ".$response->message;
       } 
       my $dom = $response->dom;
       croak "Error in downloaded text" if !$dom->at("#gsc_prf_in");
