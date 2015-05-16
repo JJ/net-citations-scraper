@@ -4,6 +4,8 @@
 
 ##Build status
 
+If this fails, you will probably be OK. Google seems to have banned Travis from making connections from there.
+
 [![Build Status](https://travis-ci.org/JJ/net-citations-scraper.svg?branch=master)](https://travis-ci.org/JJ/net-citations-scraper)
 
 ##Installation
