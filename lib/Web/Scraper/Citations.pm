@@ -39,7 +39,8 @@ around BUILDARGS => sub {
       }
       my $url = Mojo::URL->new("http://scholar.google.com/citations?user=$object{'id'}");
       my $ua = Mojo::UserAgent->new( max_redirects => 5 );
-      my $dom = $ua->get( $url )->res->dom or die "$! does not exist";
+      my $dom = $ua->get( $url )->res->dom or croak "$! does not exist";
+      croak "Error in downloaded text" if !$dom->at("#gsc_prf_in");
       $object{'name'} = $dom->at("#gsc_prf_in")->text;
       $object{'affiliation'} = $dom->at( ".gsc_prf_il" )->text;
       

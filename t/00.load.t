@@ -8,7 +8,7 @@ BEGIN {
 
 diag( "Testing Web::Scraper::Citations $Web::Scraper::Citations::VERSION" );
 
-my $person = Web::Scraper::Citations->new( gFxqc64AAAAJ ); #That's me
+my $person = Web::Scraper::Citations->new( "gFxqc64AAAAJ" ); #That's me
 isa_ok( $person, "Web::Scraper::Citations");
 
 ok( $person->name =~ /Merelo/, "Name OK");
