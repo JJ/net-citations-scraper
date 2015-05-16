@@ -39,7 +39,11 @@ around BUILDARGS => sub {
       }
       my $url = Mojo::URL->new("http://scholar.google.com/citations?user=$object{'id'}");
       my $ua = Mojo::UserAgent->new( max_redirects => 5 );
-      my $dom = $ua->get( $url )->res->dom or croak "$! does not exist";
+      my $response = $ua->get( $url )->res;
+      if ( $response->code != 200 ) {
+	  croak "Pake not found with code ". $response->code;
+      } 
+      my $dom = $response->dom;
       croak "Error in downloaded text" if !$dom->at("#gsc_prf_in");
       $object{'name'} = $dom->at("#gsc_prf_in")->text;
       $object{'affiliation'} = $dom->at( ".gsc_prf_il" )->text;
