@@ -10,6 +10,7 @@ use version; our $VERSION = qv('0.0.2');
 use Mojo::UserAgent;
 use Mojo::DOM;
 use Mojo::ByteStream 'b';
+use File::Slurp::Tiny qw(read_file);
 use Moose;
 
 # Module implementation here
@@ -45,7 +46,7 @@ around BUILDARGS => sub {
       my $url = Mojo::URL->new($_[0]);
       my $object = scrape_URL( $url );
 
-      return $class->$orig(@_);
+      return $class->$orig(  %$object);
     }
 };
 
@@ -59,16 +60,27 @@ sub profile_stats {
 sub scrape_URL {
   my $url = shift;
   my $object = {};
-  my $ua = Mojo::UserAgent->new( max_redirects => 5 );
-  my $response = $ua->get( $url )->res;
-  if ( $response->code != 200 ) {
-    croak "Page not found with code ". $response->code. " and message ".$response->message;
-  } 
-  my $dom = $response->dom;
+  my $dom;
+  my $text;
+  if ( $url =~ /http/ ) {
+    my $ua = Mojo::UserAgent->new( max_redirects => 5 );
+    my $response = $ua->get( $url )->res;
+    if ( $response->code != 200 ) {
+      croak "Page not found with code ". $response->code. " and message ".$response->message;
+    } 
+    $dom = $response->dom;
+    $text = $response->text;
+  } elsif ( $url =~ /file/ ) {
+    my ($fn) = ($url =~ /file:(.+)/);
+    $text = read_file( $fn );
+    croak "Can't open file $fn" unless $text;
+    $dom = Mojo::DOM->new( $text );
+  }
+    
   croak "Error in downloaded text" if !$dom->at("#gsc_prf_in");
   $object->{'name'} = $dom->at("#gsc_prf_in")->text;
   $object->{'affiliation'} = $dom->at( ".gsc_prf_il" )->all_text;
-  $object->{'id'} = ($response =~ /citations?user=(\w+);hl=es/ );
+  ($object->{'id'}) = ($text =~ /citations\?user=(\w+)/ );
   my @dom_stats = $dom->find(".gsc_rsb_std")->map('text')->each;
   for my $stat ( STAT_NAMES ) {
     $object->{$stat} = shift @dom_stats;

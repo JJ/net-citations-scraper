@@ -31,7 +31,8 @@ WriteMakefile(
         'version'    => 0,
 	'Mojo::DOM'  => 0,
 	'Mojo::UserAgent' => 0,
-	'Moose' => 0
+	'Moose' => 0,
+	'File::Slurp::Tiny' => 0
     },
     dist                => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
     clean               => { FILES => 'Web-Scraper-Citations-*' },
