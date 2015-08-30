@@ -31,29 +31,16 @@ around BUILDARGS => sub {
     my $class = shift;
  
     if ( @_ == 1 && !ref $_[0] ) {
-      my %object;
+      my $id;
       if ( $_[0] =~ /user=(\w+)/ ) {
-	$object{'id'} = $1;
+	$id = $1;
       } else {
-	$object{'id'} = $_[0];
+	$id = $_[0];
       }
-      my $url = Mojo::URL->new("http://scholar.google.com/citations?user=$object{'id'}");
-      my $ua = Mojo::UserAgent->new( max_redirects => 5 );
-      my $response = $ua->get( $url )->res;
-      if ( $response->code != 200 ) {
-	  croak "Page not found with code ". $response->code. " and message ".$response->message;
-      } 
-      my $dom = $response->dom;
-      croak "Error in downloaded text" if !$dom->at("#gsc_prf_in");
-      $object{'name'} = $dom->at("#gsc_prf_in")->text;
-      $object{'affiliation'} = $dom->at( ".gsc_prf_il" )->all_text;
-      
-      my @dom_stats = $dom->find(".gsc_rsb_std")->map('text')->each;
-      for my $stat ( STAT_NAMES ) {
-	$object{$stat} = shift @dom_stats;
-      }
-      
-      return $class->$orig( %object );
+      my $url = Mojo::URL->new("http://scholar.google.com/citations?user=$id");
+      my $object = scrape_URL( $url );
+      $object->{'ìd'} = $id;
+      return $class->$orig( %$object );
     }
     else {
       return $class->$orig(@_);
@@ -67,6 +54,25 @@ sub profile_stats {
     return \%stats;
 }
 
+sub scrape_URL {
+  my $url = shift;
+  my $object = {};
+  my $ua = Mojo::UserAgent->new( max_redirects => 5 );
+  my $response = $ua->get( $url )->res;
+  if ( $response->code != 200 ) {
+    croak "Page not found with code ". $response->code. " and message ".$response->message;
+  } 
+  my $dom = $response->dom;
+  croak "Error in downloaded text" if !$dom->at("#gsc_prf_in");
+  $object->{'name'} = $dom->at("#gsc_prf_in")->text;
+  $object->{'affiliation'} = $dom->at( ".gsc_prf_il" )->all_text;
+  
+  my @dom_stats = $dom->find(".gsc_rsb_std")->map('text')->each;
+  for my $stat ( STAT_NAMES ) {
+    $object->{$stat} = shift @dom_stats;
+  }
+  return $object;
+}
 
 no Moose;
 __PACKAGE__->meta->make_immutable;    
