@@ -18,7 +18,17 @@ if ( $person ) {
   isa_ok( $person, "Web::Scraper::Citations");
 }
 
-$person = Web::Scraper::Citations->new( "file:citations-jj.html" ); #from file
+my $test_file;
+my $file_name = "citations-jj.html";
+if ( -e $file_name ) {
+  $test_file =  $file_name;
+} elsif  ( -e "t/$file_name" ) {
+  $test_file = "t/$file_name";
+} else {
+  done_testing( "Can't find test file" )
+}
+
+$person = Web::Scraper::Citations->new( "file:$test_file" ); #from file
 ok( $person->name =~ /Merelo/, "Name OK");
 is( $person->id, $id, "ID OK");
 is( $person->affiliation, "Professor of Computer Architecture, University of Granada", "Affiliation OK");

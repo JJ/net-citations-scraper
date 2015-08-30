@@ -134,6 +134,12 @@ citations, absolute or in the last 5 years.
 
 Returns a hashref with all stats above, names as keys.
 
+=head2 scrape_URL( $url )
+
+Scrapes either a real URL or a C<file:> which is used mainly for caching purposes or for offline. 
+
+
+
 =head2 STAT_NAMES
 
 Constant with the names of the stats we are interested in.
