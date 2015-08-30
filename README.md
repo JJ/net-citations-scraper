@@ -4,7 +4,7 @@
 
 ##Build status
 
-[![Build Status](https://travis-ci.org/JJ/net-citations-scraper.svg?branch=v0.0.2)](https://travis-ci.org/JJ/net-citations-scraper)
+[![Build Status](https://travis-ci.org/JJ/net-citations-scraper.svg?branch=master)](https://travis-ci.org/JJ/net-citations-scraper)
 
 ##Installation
 
@@ -17,3 +17,10 @@ After cloning from here (which you might have done already),
 	make install
 
 Done!
+
+##Play
+
+With your researcher ID,
+
+    scripts/get-profile <my-id>
+	
