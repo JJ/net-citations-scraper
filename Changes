@@ -1,3 +1,9 @@
+2015-08-30  Juan J. merelo  <jmerelo@penny>
+
+	* lib/Web/Scraper/Citations.pm (profile_stats): 0.0.2 fixes a
+	problem with the affiliation and adss the possibility of getting
+	info from a file.
+
 Revision history for Web-Scraper-Citations
 
 0.0.1  Wed Mar 18 18:03:14 2015
