@@ -30,7 +30,7 @@ around BUILDARGS => sub {
     my $orig  = shift;
     my $class = shift;
  
-    if ( @_ == 1 && !ref $_[0] ) {
+    if ( @_ == 1 && $_[0] !~ /file:/ ) {
       my $id;
       if ( $_[0] =~ /user=(\w+)/ ) {
 	$id = $1;
@@ -39,10 +39,12 @@ around BUILDARGS => sub {
       }
       my $url = Mojo::URL->new("http://scholar.google.com/citations?user=$id");
       my $object = scrape_URL( $url );
-      $object->{'ìd'} = $id;
       return $class->$orig( %$object );
     }
-    else {
+    elsif ( $_[0] =~ /file:/ ) {
+      my $url = Mojo::URL->new($_[0]);
+      my $object = scrape_URL( $url );
+
       return $class->$orig(@_);
     }
 };
@@ -66,7 +68,7 @@ sub scrape_URL {
   croak "Error in downloaded text" if !$dom->at("#gsc_prf_in");
   $object->{'name'} = $dom->at("#gsc_prf_in")->text;
   $object->{'affiliation'} = $dom->at( ".gsc_prf_il" )->all_text;
-  
+  $object->{'id'} = ($response =~ /citations?user=(\w+);hl=es/ );
   my @dom_stats = $dom->find(".gsc_rsb_std")->map('text')->each;
   for my $stat ( STAT_NAMES ) {
     $object->{$stat} = shift @dom_stats;
