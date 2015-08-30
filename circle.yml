@@ -5,4 +5,4 @@ dependencies:
     - cpanm --local-lib=~/perl5 --installdeps .
 test:
   override:
-    - perl Makefile.PL LIB=~/perl5 INC=-I~/perl5  && make && prove -l ~/perl5
+    - export PERL5LIB=$PERL5LIB:~/perl5; perl Makefile.PL INC=-I~/perl5  && make && prove -l ~/perl5
