@@ -4,9 +4,7 @@
 
 ##Build status
 
-If this fails, you will probably be OK, might mean Google has banned Circle CI (after having banned Travis)
-
-[![Circle CI](https://circleci.com/gh/JJ/net-citations-scraper.svg?style=svg)](https://circleci.com/gh/JJ/net-citations-scraper)
+[![Build Status](https://travis-ci.org/JJ/net-citations-scraper.svg?branch=v0.0.2)](https://travis-ci.org/JJ/net-citations-scraper)
 
 ##Installation
 
