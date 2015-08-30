@@ -1,8 +1,0 @@
-dependencies:
-  pre:
-    - curl -L https://cpanmin.us | perl - --sudo App::cpanminus
-  post:
-    - cpanm --local-lib=~/perl5 --installdeps .
-test:
-  override:
-    - perl Makefile.PL PREFIX=~/perl5 LIB=~/perl5  && make && prove -l ~/perl5
