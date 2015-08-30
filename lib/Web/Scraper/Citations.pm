@@ -46,7 +46,7 @@ around BUILDARGS => sub {
       my $dom = $response->dom;
       croak "Error in downloaded text" if !$dom->at("#gsc_prf_in");
       $object{'name'} = $dom->at("#gsc_prf_in")->text;
-      $object{'affiliation'} = $dom->at( ".gsc_prf_il" )->text;
+      $object{'affiliation'} = $dom->at( ".gsc_prf_il" )->all_text;
       
       my @dom_stats = $dom->find(".gsc_rsb_std")->map('text')->each;
       for my $stat ( STAT_NAMES ) {
