@@ -2,7 +2,6 @@ dependencies:
   pre:
     - curl -L https://cpanmin.us | perl - --sudo App::cpanminus
   post:
-    - cpanm prove
     - cpanm --local-lib=~/perl5 --installdeps .
 test:
   override:
