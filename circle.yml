@@ -1,6 +1,6 @@
 dependencies:
   post:
-    -cpanm --installdeps .
+    - cpanm --installdeps .
 test:
   override:
     - perl Makefile.PL && make && make test
