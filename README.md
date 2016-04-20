@@ -1,6 +1,6 @@
 # Web::Scraper::Citations
 
-[Google scholar citations](http://scholar.google.com/citations) profile scraper. Extracts citation stats.  
+[Google scholar citations](http://scholar.google.com/citations) profile scraper. Extracts researcher citation stats.
 
 ##Build status
 
@@ -24,3 +24,7 @@ With your researcher ID,
 
     scripts/get-profile <my-id>
 	
+## TOSssing you off
+
+
+Google has now [a single terms of service for all of them](https://www.google.com/policies/terms/). It basically says "don't mess with us". So use this scraper as you would do it by hand, and mainly for personal or institutional purposes. When in doubt, don't.
